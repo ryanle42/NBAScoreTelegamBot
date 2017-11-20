@@ -1,0 +1,25 @@
+{
+  "name": "new",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "columnify": "^1.5.4",
+    "dateformat": "^3.0.2",
+    "dotenv-json": "^1.0.0",
+    "firebase-admin": "^5.4.3",
+    "moment": "^2.19.1",
+    "now": "^8.3.10",
+    "telegraf": "^3.15.3",
+    "telegraf-flow": "^8.3.0",
+    "telegraf-logger": "^2.0.2",
+    "telegraf-session-firebase": "0.0.1",
+    "urllib": "^2.25.1"
+  }
+}
