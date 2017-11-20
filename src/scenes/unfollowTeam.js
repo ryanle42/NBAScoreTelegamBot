@@ -4,14 +4,17 @@ const { Extra, Markup } = require('telegraf');
 const teamNames = require('../../teams.json');
 const teamNameFromAbbr = require('../helpers/teamNameFromAbbr');
 const asyncSleep = require('../helpers/asyncSleep');
-const { isFollowingTeam, followTeam, getTeams } = require('../database/teams');
+const { isFollowingTeam, unfollowTeam, getTeams } = require('../database/teams');
 
-const followTeamScene = new WizardScene('follow-team',
+const unfollowTeamScene = new WizardScene('unfollow-team',
   async (ctx) => {
-    let teamList = [];
-    output = '';
     let teams = await getTeams(ctx.from.username);
-    if (teams) {
+    if (!teams) {
+      await ctx.reply('You aren\'t following any teams');
+      await asyncSleep(1);
+      await ctx.flow.enter('team-manager');
+    } else {
+      let teamList = [];
       for (team in teams) {
         let { teamName } = teamNameFromAbbr(team);
         if (teamName) {
@@ -20,23 +23,23 @@ const followTeamScene = new WizardScene('follow-team',
       }
       if (teamList) {
         teamList = teamList.join(", ");
-        output += `You are following the ${teamList}.\n\n`;
+        output = `You are following the ${teamList}.\n\n`;
       }
+      output = output + 'Please enter Team Name or ' +
+      'Abbrev. eg. (GSW, Cavs, Thunders ...)'; 
+      await ctx.reply(output, Markup.inlineKeyboard([
+        Markup.callbackButton('Cancel', 'CANCEL'),
+      ]).extra());
+      await ctx.flow.wizard.next();
     }
-    output += 'Please enter Team Name or ' +
-    'Abbrev. eg. (GSW, Cavs, Thunders ...)';
-    await ctx.reply(output, Markup.inlineKeyboard([
-      Markup.callbackButton('Cancel', 'CANCEL'),
-    ]).extra());
-    await ctx.flow.wizard.next();
   },
   async (ctx) => {
     if (ctx.message) {
       let response = ctx.message.text;
       let params = response.split(',');
       cantRecog = [];
-      following = [];
-      followed = [];
+      notFollowing = [];
+      unfollowed = [];
       for (param in params) {
         param = params[param];
         param = param.trim();
@@ -46,25 +49,25 @@ const followTeamScene = new WizardScene('follow-team',
         } else {
           let isFollowing = await isFollowingTeam(ctx.from.username, teamAbbr);
           if (isFollowing) {
-            following.push(teamName);
+            await unfollowTeam(ctx.from.username, teamAbbr);
+            unfollowed.push(teamName);
           } else {
-            await followTeam(ctx.from.username, teamAbbr);
-            followed.push(teamName);
-          }
+            notFollowing.push(teamName);
+          } 
         }
       }
       cantRecog = cantRecog.join(', ');
-      following = following.join(', ');
-      followed = followed.join(', ');
+      notFollowing = notFollowing.join(', ');
+      unfollowed = unfollowed.join(', ');
       output = '';
       if (cantRecog) {
         output += `Can't recognize ${cantRecog}.\n`;
       }
-      if (following) {
-        output += `You are already following ${following}.\n`;
+      if (notFollowing) {
+        output += `You aren't following ${notFollowing}.\n`;
       }
-      if (followed) {
-        output += `You followed ${followed}.\n`;
+      if (unfollowed) {
+        output += `You unfollowed ${unfollowed}.\n`;
       }
       await ctx.reply(output, Markup
         .keyboard([
@@ -81,4 +84,4 @@ const followTeamScene = new WizardScene('follow-team',
   }
 )
 
-module.exports = followTeamScene;
+module.exports = unfollowTeamScene;
