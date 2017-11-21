@@ -26,12 +26,17 @@ const myTeamsScene = new WizardScene('my-teams',
       let updates = await isUpdatesOn(ctx.from.username);
       let infoArr = [];
       let teamList = [];
+      let noGames = [];
       for (team in teams) {
         let info = await getTeamInfo(team);
         let teamName = teamNameFromAbbr(team);
         if (info) {
           infoArr.push(info);
           teamList.push(teamName);
+        } else {
+          if (teamName) {
+            noGames.push(teamName);
+          }
         }
       }
       teamList = teamList.join(", ");
@@ -51,7 +56,8 @@ const myTeamsScene = new WizardScene('my-teams',
           .extra()
         );
       } else {
-        await ctx.reply(`No games today for the ${teamList}.`, Markup
+        noGames = noGames.join(", ");
+        await ctx.reply(`No games today for the ${noGames}.`, Markup
           .keyboard([
             ['🏀 My Teams', '🗓 Games Today'],
             (updates) ? ['⚙️ Settings', '🔕 Updates Off'] : ['⚙️ Settings', '🔔 Updates On']

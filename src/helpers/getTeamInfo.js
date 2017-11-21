@@ -1,7 +1,8 @@
 const urllib = require('urllib');
 const { teamNameFromAbbr, teamAbbrFromName } = require('../helpers/getTeamNames');
 
-var date = new Date()
+var date = new Date();
+date.setHours(date.getHours() - 8);
 let year = (date.getFullYear()).toString();
 let month = (date.getMonth() + 1).toString();
 let day = (date.getDate()).toString();
@@ -25,8 +26,9 @@ const getTeamInfo = async (teamAbbr) => {
   let games = data['games'];
   let output = null;
   games.forEach((game) => {
-    let = gameInfo = {};
+    let gameInfo = {};
     var utcDate = new Date(game['startTimeUTC']);
+    utcDate.setHours(utcDate.getHours() - 8);
     var pstTime = new Date(utcDate);
     let home = game['hTeam'];
     let away = game['vTeam'];
