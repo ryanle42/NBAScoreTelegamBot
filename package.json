@@ -20,6 +20,7 @@
     "telegraf-flow": "^8.3.0",
     "telegraf-logger": "^2.0.2",
     "telegraf-session-firebase": "0.0.1",
-    "urllib": "^2.25.1"
+    "urllib": "^2.25.1",
+    "validator": "^9.1.1"
   }
 }

@@ -14,8 +14,20 @@ async function getUsers() {
   return (data.val());
 }
 
+async function isExistingUser(username) {
+  const data = await database.ref(`users/${username}/existingUser`).once('value');
+  let exists = (data.val() === null) ? false : data.val();
+  if (!exists) {
+    await database.ref(`users/${username}/existingUser`).set(true);
+    return false;
+  } else {
+    return true;
+  }
+}
+
 module.exports = {
   login,
   getChatId,
-  getUsers
+  getUsers,
+  isExistingUser
 };

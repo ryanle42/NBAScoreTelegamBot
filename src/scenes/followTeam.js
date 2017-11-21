@@ -2,7 +2,7 @@ const TelegrafFlow = require('telegraf-flow');
 const { WizardScene, Scene } = TelegrafFlow;
 const { Extra, Markup } = require('telegraf');
 const teamNames = require('../../teams.json');
-const teamNameFromAbbr = require('../helpers/teamNameFromAbbr');
+const { teamNameFromAbbr, teamAbbrFromName } = require('../helpers/getTeamNames');
 const asyncSleep = require('../helpers/asyncSleep');
 const { isFollowingTeam, followTeam, getTeams } = require('../database/teams');
 
@@ -13,7 +13,7 @@ const followTeamScene = new WizardScene('follow-team',
     let teams = await getTeams(ctx.from.username);
     if (teams) {
       for (team in teams) {
-        let { teamName } = teamNameFromAbbr(team);
+        let teamName = teamNameFromAbbr(team);
         if (teamName) {
           teamList.push(teamName);
         }
@@ -40,7 +40,8 @@ const followTeamScene = new WizardScene('follow-team',
       for (param in params) {
         param = params[param];
         param = param.trim();
-        let { teamName, teamAbbr } = teamNameFromAbbr(param);
+        let teamName = teamNameFromAbbr(param);
+        let teamAbbr = teamAbbrFromName(param);
         if (teamName == '') {
           cantRecog.push(param);
         } else {
@@ -68,7 +69,7 @@ const followTeamScene = new WizardScene('follow-team',
       }
       await ctx.reply(output, Markup
         .keyboard([
-          ['⬅️ Back', '📊 My Teams'],
+          ['⬅️ Back', '🕓 Set Interval'],
           ['➕ Follow Team', '➖ Unfollow Team']
         ])
         .oneTime()

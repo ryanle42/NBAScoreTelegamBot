@@ -1,5 +1,6 @@
 const urllib = require('urllib');
 var columnify = require('columnify');
+const { teamNameFromAbbr, teamAbbrFromName} = require('../helpers/getTeamNames');
 
 var date = new Date()
 let year = (date.getFullYear()).toString();
@@ -37,22 +38,21 @@ const getCurrentGames = async () => {
     let timeLeft = '';
     if (quarter == 4 && !clock) {
       timeLeft = 'Final';
+    } else if (quarter == 2 && !clock) {
+      timeLeft = 'Halftime';
     } else if (quarter > 0) {
       timeLeft = 'Q' + quarter + ' ' + clock;
     }
-    // gameInfo['tm'] = formatAMPM(pstTime);
     gameInfo['Ho'] = home['triCode'];
     gameInfo['hs'] = home['score'];
     gameInfo['Vi'] = away['triCode'];
     gameInfo['vs'] = away['score'];
-    gameInfo['Q'] = quarter ? 'Q' + quarter : formatAMPM(pstTime);
-    gameInfo['Time'] = clock ? clock : null;
+    gameInfo['Q'] = quarter ? timeLeft : formatAMPM(pstTime);
     output.push(gameInfo);
   });
-  output = columnify(output);
-  var lines = output.split('\n');
-  lines.splice(0, 1);
-  output = lines.join('\n');
+  output = columnify(output, {
+    showHeaders: false
+  });
   return (output);
 }
 

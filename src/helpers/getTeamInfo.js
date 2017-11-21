@@ -1,4 +1,5 @@
 const urllib = require('urllib');
+const { teamNameFromAbbr, teamAbbrFromName } = require('../helpers/getTeamNames');
 
 var date = new Date()
 let year = (date.getFullYear()).toString();
@@ -26,7 +27,6 @@ const getTeamInfo = async (teamAbbr) => {
   games.forEach((game) => {
     let = gameInfo = {};
     var utcDate = new Date(game['startTimeUTC']);
-    // utcDate.setHours(utcDate.getHours());
     var pstTime = new Date(utcDate);
     let home = game['hTeam'];
     let away = game['vTeam'];
@@ -36,16 +36,16 @@ const getTeamInfo = async (teamAbbr) => {
       let timeLeft = '';
       if (quarter == 4 && !clock) {
         timeLeft = 'Final';
+      } else if (quarter == 2 && !clock) {
+        timeLeft = 'Halftime';
       } else if (quarter > 0) {
         timeLeft = 'Q' + quarter + ' ' + clock;
       }
-      // gameInfo['tm'] = formatAMPM(pstTime);
-      gameInfo['Ho'] = home['triCode'];
+      gameInfo['Ho'] = teamNameFromAbbr(home['triCode']);
       gameInfo['hs'] = home['score'];
-      gameInfo['Vi'] = away['triCode'];
+      gameInfo['Vi'] = teamNameFromAbbr(away['triCode']);
       gameInfo['vs'] = away['score'];
-      gameInfo['Q'] = quarter ? 'Q' + quarter : formatAMPM(pstTime);
-      gameInfo['Time'] = clock ? clock : null;
+      gameInfo['Q'] = quarter ? timeLeft: formatAMPM(pstTime);
       output = gameInfo;
     }
   });

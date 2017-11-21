@@ -8,11 +8,11 @@ const currentGamesScene = new WizardScene('current-games',
   async (ctx) => {
     let output = await getCurrentGames();
     output = '<code>' + output + '</code>';
-    updates = await isUpdatesOn(ctx.from.username);
+    let updates = await isUpdatesOn(ctx.from.username);
     await ctx.replyWithHTML(output, Markup
       .keyboard([
-        ['🏀 Team Manager', '📊 Games Today'],
-        (updates) ? ['🕓 Set Interval', '🔔 Updates On'] : ['🕓 Set Interval', '🔕 Updates Off']
+        ['🏀 My Teams', '🗓 Games Today'],
+        (updates) ? ['⚙️ Settings', '🔔 Updates On'] : ['⚙️ Settings', '🔕 Updates Off']
       ])
       .oneTime()
       .resize()

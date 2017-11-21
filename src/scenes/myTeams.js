@@ -2,7 +2,8 @@ const TelegrafFlow = require('telegraf-flow');
 const { WizardScene, Scene } = TelegrafFlow;
 const { Extra, Markup } = require('telegraf');
 const teamNames = require('../../teams.json');
-const teamNameFromAbbr = require('../helpers/teamNameFromAbbr');
+const { isUpdatesOn } = require('../database/updates');
+const { teamNameFromAbbr } = require('../helpers/getTeamNames');
 const asyncSleep = require('../helpers/asyncSleep');
 const { getTeams } = require('../database/teams');
 const getTeamInfo = require('../helpers/getTeamInfo');
@@ -20,33 +21,30 @@ const myTeamsScene = new WizardScene('my-teams',
     if (!teams) {
       await ctx.reply('You aren\'t following any teams');
       await asyncSleep(1);
-      await ctx.flow.enter('team-manager');
+      await ctx.flow.enter('start');
     } else {
+      let updates = await isUpdatesOn(ctx.from.username);
       let infoArr = [];
       let teamList = [];
       for (team in teams) {
         let info = await getTeamInfo(team);
-        let { teamName } = teamNameFromAbbr(team);
-        if (teamName) {
-          teamList.push(teamName);
-        }
+        let teamName = teamNameFromAbbr(team);
         if (info) {
           infoArr.push(info);
+          teamList.push(teamName);
         }
       }
       teamList = teamList.join(", ");
       infoArr = removeDuplicates(infoArr, 'Ho');
-      let output = columnify(infoArr);
-      var lines = output.split('\n');
-      lines.splice(0, 1);
-      output = lines.join('\n');
+      output = columnify(infoArr, {
+        showHeaders: false
+      });
       if (output) {
-        output = `Games today for the ${teamList}.\n\n` + 
-        '<code>' + output + '</code>';
+        output = '<code>' + output + '</code>';
         ctx.replyWithHTML(`${output}`, Markup
           .keyboard([
-            ['⬅️ Back', '📊 My Teams'],
-            ['➕ Follow Team', '➖ Unfollow Team']
+            ['🏀 My Teams', '🗓 Games Today'],
+            (updates) ? ['⚙️ Settings', '🔔 Updates On'] : ['⚙️ Settings', '🔕 Updates Off']
           ])
           .oneTime()
           .resize()
@@ -55,8 +53,8 @@ const myTeamsScene = new WizardScene('my-teams',
       } else {
         await ctx.reply(`No games today for the ${teamList}.`, Markup
           .keyboard([
-            ['⬅️ Back', '📊 My Teams'],
-            ['➕ Follow Team', '➖ Unfollow Team']
+            ['🏀 My Teams', '🗓 Games Today'],
+            (updates) ? ['⚙️ Settings', '🔔 Updates On'] : ['⚙️ Settings', '🔕 Updates Off']
           ])
           .oneTime()
           .resize()
