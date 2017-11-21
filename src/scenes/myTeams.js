@@ -44,7 +44,7 @@ const myTeamsScene = new WizardScene('my-teams',
         ctx.replyWithHTML(`${output}`, Markup
           .keyboard([
             ['🏀 My Teams', '🗓 Games Today'],
-            (updates) ? ['⚙️ Settings', '🔔 Updates On'] : ['⚙️ Settings', '🔕 Updates Off']
+            (updates) ? ['⚙️ Settings', '🔕 Updates Off'] : ['⚙️ Settings', '🔔 Updates On']
           ])
           .oneTime()
           .resize()
@@ -54,7 +54,7 @@ const myTeamsScene = new WizardScene('my-teams',
         await ctx.reply(`No games today for the ${teamList}.`, Markup
           .keyboard([
             ['🏀 My Teams', '🗓 Games Today'],
-            (updates) ? ['⚙️ Settings', '🔔 Updates On'] : ['⚙️ Settings', '🔕 Updates Off']
+            (updates) ? ['⚙️ Settings', '🔕 Updates Off'] : ['⚙️ Settings', '🔔 Updates On']
           ])
           .oneTime()
           .resize()

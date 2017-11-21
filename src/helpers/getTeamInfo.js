@@ -34,7 +34,7 @@ const getTeamInfo = async (teamAbbr) => {
       let quarter = game['period']['current'];
       let clock = game['clock'];
       let timeLeft = '';
-      if (quarter == 4 && !clock) {
+      if (quarter >= 4 && !clock) {
         timeLeft = 'Final';
       } else if (quarter == 2 && !clock) {
         timeLeft = 'Halftime';

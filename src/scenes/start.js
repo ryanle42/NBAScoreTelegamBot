@@ -12,14 +12,14 @@ startScene.enter(async (ctx) => {
     message = 'Menu';
   } else {
     message = 'Hi! Thanks for using the NBA scores bot :)\n\nMobile users, ' + 
-    'for optimal experience, please set the font size in your ' + 
-    'settings to 13 or less.'
+    'for optimal experience, please set the font size in your Telegram' + 
+    'settings to 12.'
   }
   ctx.session.cancel = 'start';
   let sentMsg = await ctx.reply(message, Markup
     .keyboard([
       ['🏀 My Teams', '🗓 Games Today'],
-      (updates) ? ['⚙️ Settings', '🔔 Updates On'] : ['⚙️ Settings', '🔕 Updates Off']
+        (updates) ? ['⚙️ Settings', '🔕 Updates Off'] : ['⚙️ Settings', '🔔 Updates On']
     ])
     .oneTime()
     .resize()

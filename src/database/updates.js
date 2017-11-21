@@ -17,16 +17,25 @@ async function getTimeLeft(username) {
 }
 
 async function setTimeLeft(username, min) {
-  await database.ref(`users/${username}/timeLeft`).set(min);
+  await database.ref(`users/${username}/timeLeft`).set(parseInt(min));
 }
 
 async function setInterval(username, min) {
-  await database.ref(`users/${username}/interval`).set(min);
+  await database.ref(`users/${username}/interval`).set(parseInt(min));
 }
 
 async function getInterval(username) {
   let data = await database.ref(`users/${username}/interval`).once('value');
   return (data.val() === null) ? null : data.val();
+}
+
+async function getLastUpdate(username, team) {
+  let data = await database.ref(`users/${username}/teams/${team}`).once('value');
+  return (data.val() === null) ? null : data.val();
+}
+
+async function setLastUpdate(username, team, update) {
+  await database.ref(`users/${username}/teams/${team}`).set(update);
 }
 
 module.exports = {
@@ -35,5 +44,7 @@ module.exports = {
   getTimeLeft,
   setTimeLeft,
   setInterval,
-  getInterval
+  getInterval,
+  setLastUpdate,
+  getLastUpdate
 };

@@ -36,16 +36,16 @@ const getCurrentGames = async () => {
     let quarter = game['period']['current'];
     let clock = game['clock'];
     let timeLeft = '';
-    if (quarter == 4 && !clock) {
+    if (quarter >= 4 && !clock) {
       timeLeft = 'Final';
     } else if (quarter == 2 && !clock) {
       timeLeft = 'Halftime';
     } else if (quarter > 0) {
       timeLeft = 'Q' + quarter + ' ' + clock;
     }
-    gameInfo['Ho'] = home['triCode'];
+    gameInfo['Ho'] = teamNameFromAbbr(home['triCode']);
     gameInfo['hs'] = home['score'];
-    gameInfo['Vi'] = away['triCode'];
+    gameInfo['Vi'] = teamNameFromAbbr(away['triCode']);
     gameInfo['vs'] = away['score'];
     gameInfo['Q'] = quarter ? timeLeft : formatAMPM(pstTime);
     output.push(gameInfo);
