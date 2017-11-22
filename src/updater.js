@@ -32,8 +32,8 @@ const updater = async function() {
       let updates = await isUpdatesOn(username);
       let id = users[username]['id'];
       if (updates) {
-        let timeLeft = getTimeLeft(username);
-        let interval = getInterval(username);
+        let timeLeft = await getTimeLeft(username);
+        let interval = await getInterval(username);
         if (timeLeft + 1 >= interval) {
           let infoArr = [];
           let teams = await getTeams(username);
